@@ -1,0 +1,16 @@
+<div id="userview">
+    <a href="/" class="voltar">Voltar</a>
+    {{#with user}}
+        <div id="userview-container">
+            <h2>Nome: {{name}}</h2>
+            <p>Ocupação: {{occupation}}</p>
+            <p>Aceitou Promoções:
+                {{#if newsletter}}
+                    Sim
+                {{else}}
+                    Não
+                {{/if}}
+            </p>
+        </div>
+    {{/with}}
+</div>

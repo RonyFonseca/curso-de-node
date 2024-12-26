@@ -1,0 +1,64 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-size: 70px;
+    text-align: center;
+}
+
+.form {
+    width: 500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-control > label {
+    font-weight: bolder;
+}
+
+.form-control > input {
+    height: 35px;
+}
+
+#cadastrar {
+    height: 40px;
+}
+
+/*CARDS BOOKS*/
+#card-book-container {
+    width: 400px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.card-book {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-book-content > h3, h4, p {
+    margin:0;
+}
+
+.card-book-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/*book*/
+#book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,14 @@
+<div id="container">
+    {{#each users}}
+    <div class="item">
+        <h3>{{this.name}}</h3>
+        <div>
+            <a href="/user/{{{this.id}}}">Ver sobre</a>
+            <a href="/user/edit/{{{this.id}}}">Editar</a>
+            <form action="/user/delete/{{this.id}}" method="post">
+                <input type="submit" value="Excluir">
+            </form>
+        </div>
+    </div>
+    {{/each}}
+</div>

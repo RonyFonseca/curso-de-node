@@ -1,0 +1,37 @@
+<div id="all-tasks">
+    <h1>Todas as tasks</h1>
+    <ul class="lits-tasks">
+        {{#each task}}
+            <div class="container-task">
+                {{#if this.done}}
+                    <li class="item-list-tasks done"><span class="id">#ID:{{this.id}}</span><span class="title">Titulo:</span><a href="/" class="title-a">{{this.title}}</a></li>
+                {{else}}
+                    <li class="item-list-tasks"><span class="id">#ID:{{this.id}}</span><span class="title">Titulo:</span><a href="/" class="title-a">{{this.title}}</a></li>
+                {{/if}}
+                <div class="menu-tasks">
+                    <form action="/tasks/finalizarTarefa" method="post">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <input type="hidden" name="done" value="{{this.done}}">
+                        <button type="submit">
+                            <i class="bi bi-check2"></i>
+                        </button>
+                    </form>
+                    
+                    <form action="/tasks/select" method="post">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <button type="submit">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </form>
+
+                    <form action="/tasks/delete" method="post">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <button type="submit">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {{/each}}
+    </ul>
+</div>
