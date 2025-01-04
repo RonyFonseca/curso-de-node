@@ -19,6 +19,10 @@ const Pet = mongoose.model("User",
             type: Array,
             required: true
         }, 
+        color: {
+            type: String, 
+            required: true
+        },
         available: {
             type: Boolean,
             required: true
