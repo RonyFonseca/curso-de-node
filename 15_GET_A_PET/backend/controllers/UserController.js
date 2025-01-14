@@ -57,6 +57,48 @@ class UserController{
             res.status(500).json({message: error})
         }
     }
+
+    static async login(req, res){
+        const {email, password} = req.body 
+
+        if(!email){
+            res.status(422).json({message:"The email field is empty!"})
+            return 
+        }
+        if(!password){
+            res.status(422).json({message:"The password field is empty!"})
+            return
+        }
+
+        // Exist user 
+        const user = await User.findOne({email:email})
+        if(!user){
+            res.status(422).json({message:"This user not exist"})
+            return
+        }
+        
+        // Check password
+        const confirmPasswordDb = await bcrypt.compare(password, user.password)
+        if(!confirmPasswordDb){
+            res.status(422).json({message:"Invalid password!"})
+            return
+        }
+
+        await createUserToken(user, req, res)
+    }
+
+    static checkUser(req, res){
+        const currentUser = null 
+        console.log(req.headers.authorization)
+
+        if(req.headers.authorization){
+            
+        }else{
+            currentUser = null
+        }
+
+        res.status(200).send(currentUser)
+    }
 }
 
 export default UserController
