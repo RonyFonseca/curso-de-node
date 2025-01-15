@@ -1,6 +1,10 @@
 import User from "../models/User.js"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+
+//Helpers
 import createUserToken from "../helpers/create-user-token.js"
+import getToken from "../helpers/get-token.js"
 
 class UserController{
     static async register(req, res){
@@ -87,17 +91,33 @@ class UserController{
         await createUserToken(user, req, res)
     }
 
-    static checkUser(req, res){
-        const currentUser = null 
-        console.log(req.headers.authorization)
+    static async checkUser(req, res){
+        let currentUser
 
         if(req.headers.authorization){
-            
+            const token = getToken(req)
+            const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+
+            const user = await User.findById(decodedToken.id).select("-password")
+
+            currentUser = user
         }else{
             currentUser = null
         }
-
         res.status(200).send(currentUser)
+    }
+
+    static async getUserById(req, res){
+        const id = req.params.id
+
+        const user = await User.findById(id).select("-password")
+
+        if(!user){
+            res.estatus(422).json({message: "User not found !"})
+            return 
+        }
+
+        res.status(200).json({user})
     }
 }
 
