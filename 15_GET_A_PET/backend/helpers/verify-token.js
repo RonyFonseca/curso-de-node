@@ -1,26 +1,23 @@
-import jwt from "jsonwebtoken"
-import getToken from "./get-token.js"
+import checkToken from "./check-token.js"
 
 const verifyToken = (req, res, next) => {
     if(!req.headers.authorization){
-        res.status(401).json({message: "Acesso negado"})
+        res.status(422).json({message:"Acesso negado!"})
         return
     }
 
-    const token = getToken(req)
+    const token = checkToken(req)
 
     if(!token){
-        res.status(401).json({message: "Acesso negado"})
+        res.status(422).json({message:"Acesso negado!"})
         return
     }
 
-
     try{
-        const verified = jwt.verify(token, "nossosecret")
-        req.user = verified
+        req.user = token
         next()
-    } catch(err){
-        res.status(400).json({message: "Token invalido"})
+    }catch(err){
+        res.status(422).json({message: "Token inválido!", err})
         return
     }
 }

@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken"
 
 //Helpers
 import createUserToken from "../helpers/create-user-token.js"
-import getToken from "../helpers/get-token.js"
+import checkToken from "../helpers/check-token.js"
+import getUserToken from "../helpers/get-user-by-token.js"
 
 class UserController{
     static async register(req, res){
@@ -95,10 +96,9 @@ class UserController{
         let currentUser
 
         if(req.headers.authorization){
-            const token = getToken(req)
-            const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+            const token = checkToken(req, res)
 
-            const user = await User.findById(decodedToken.id).select("-password")
+            const user = await User.findById(token.id).select("-password")
 
             currentUser = user
         }else{
@@ -118,6 +118,46 @@ class UserController{
         }
 
         res.status(200).json({user})
+    }
+
+    static async editUser(req, res){
+        const {email, name, phone, password, confirmPassword} = req.body
+
+        const user = await getUserToken(req)
+
+        //VALIDATIONS
+        if(!user){
+            res.status(422).json({message:"User not exist !"})
+            return 
+        }
+
+        const userExist = await User.findOne({email: email})
+
+        if(!user.email !== email && userExist){
+            res.status(422).json({message: "Use a different email"})
+            return
+        }
+        if(!name){
+            res.status(422).json({message:"The name field is empty!"})
+            return 
+        }
+        if(!phone){
+            res.status(422).json({message:"The phone field is empty!"})
+            return 
+        }
+        if(!email){
+            res.status(422).json({message:"The email field is empty!"})
+            return 
+        }
+        if(!password){
+            res.status(422).json({message:"The password field is empty!"})
+            return 
+        }
+        if(!confirmPassword){
+            res.status(422).json({message:"The confirm password field is empty!"})
+            return 
+        }
+
     }
 }
 
