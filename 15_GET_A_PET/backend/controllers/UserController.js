@@ -1,6 +1,5 @@
 import User from "../models/User.js"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
 
 //Helpers
 import createUserToken from "../helpers/create-user-token.js"
@@ -51,8 +50,8 @@ class UserController{
         const user = new User({
             name: name, 
             email: email, 
+            phone: phone,
             password: passwordHash,
-            phone: phone
         })
 
         try {
@@ -121,11 +120,15 @@ class UserController{
     }
 
     static async editUser(req, res){
-        const {email, name, phone, password, confirmPassword} = req.body
+        const {email, name, phone, image, password, confirmPassword} = req.body
 
         const user = await getUserToken(req)
 
         //VALIDATIONS
+
+        if(req.file){
+            user.image = req.file.filename
+        }
         if(!user){
             res.status(422).json({message:"User not exist !"})
             return 
@@ -133,22 +136,34 @@ class UserController{
 
         const userExist = await User.findOne({email: email})
 
-        if(!user.email !== email && userExist){
-            res.status(422).json({message: "Use a different email"})
-            return
-        }
-        if(!name){
-            res.status(422).json({message:"The name field is empty!"})
-            return 
-        }
-        if(!phone){
-            res.status(422).json({message:"The phone field is empty!"})
-            return 
-        }
         if(!email){
             res.status(422).json({message:"The email field is empty!"})
             return 
         }
+
+        if(userExist._id.toString() == user._id.toString()){
+            if(user.email == email){
+                user.email = email 
+            }
+        }else{
+            res.status(422).json({message: "Use a different email"})
+            return
+        }
+
+        if(!name){
+            res.status(422).json({message:"The name field is empty!"})
+            return 
+        }
+
+        user.name = name
+
+        if(!phone){
+            res.status(422).json({message:"The phone field is empty!"})
+            return 
+        }
+
+        user.phone = phone
+
         if(!password){
             res.status(422).json({message:"The password field is empty!"})
             return 
@@ -156,6 +171,23 @@ class UserController{
         if(!confirmPassword){
             res.status(422).json({message:"The confirm password field is empty!"})
             return 
+        }
+        if(password !== confirmPassword){
+            res.status(422).json({message:"the password not confirm with field confirm password!"})
+            return 
+        }else if(password == confirmPassword){
+            const salt = await bcrypt.genSalt(12)
+            const passwordHash = await bcrypt.hash(password, salt)
+
+            user.password = passwordHash
+        }
+
+        try {
+            await User.findOneAndUpdate({_id: user._id}, {$set: user}, {new:true})
+            res.status(200).json({message:"The user is updated"})
+        }catch(err){
+            res.status(500).json({message:err})
+            return
         }
 
     }
