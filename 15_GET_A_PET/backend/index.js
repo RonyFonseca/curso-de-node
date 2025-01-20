@@ -15,8 +15,11 @@ app.use(cors({credentials: true, origin: "http//localhost:3000"}))
 app.use(express.static("public"))
 
 //ROUTES
-import UserRoutes from "../backend/routes/UserRoutes.js"
+import UserRoutes from "./routes/UserRoutes.js"
 app.use("/users", UserRoutes)
+
+import PetRoutes from "./routes/PetRoutes.js"
+app.use("/pets", PetRoutes)
 
 
 app.listen(process.env.PORT)

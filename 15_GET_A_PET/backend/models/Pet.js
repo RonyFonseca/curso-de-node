@@ -1,7 +1,7 @@
 import mongoose from "../db/conn.js"
 import {Schema} from "mongoose" 
 
-const Pet = mongoose.model("User", 
+const Pet = mongoose.model("Pet", 
     new Schema({
         name:{
             type: String, 
