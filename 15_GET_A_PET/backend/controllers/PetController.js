@@ -5,6 +5,7 @@ class PetController {
     static async create(req, res){
         const {name, age, weight, color} = req.body
         const available = true
+        const images = req.files
 
         if(!name){
             res.status(422).json({message: "The name fiel is empty !"})
@@ -26,6 +27,11 @@ class PetController {
             return 
         }
 
+        if(images.length == 0){
+            res.status(422).json({message: "The images fiel is empty !"})
+            return 
+        }
+
         const user = await getUserToken(req)
 
         const pet = new Pet({
@@ -43,6 +49,10 @@ class PetController {
             }
         })
 
+        images.map((image) => {
+            pet.images.push(image.filename)
+        })
+
         try{
             const newPet = await pet.save()
             res.status(201).json({message: "Sucesso ao criar", newPet})
@@ -50,6 +60,21 @@ class PetController {
             res.status(200).json({message: err})
         }
         
+    }
+
+    static async getAllpets(req, res){
+        const pets = await Pet.find().sort("-createdAt")
+
+        res.status(200).json({pets})
+    }
+
+    static async getAllPetUser(req, res){
+        const userToken = await getUserToken(req)
+        const idToken = userToken._id
+        
+        const petsUser = await Pet.find({"user._id": idToken.toString()}).sort("-createdAt")
+
+        res.status(200).json({petsUser})
     }
 }
 
