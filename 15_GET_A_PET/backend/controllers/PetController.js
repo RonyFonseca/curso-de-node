@@ -1,5 +1,6 @@
 import Pet from "../models/Pet.js"
 import getUserToken from "../helpers/get-user-by-token.js"
+import { isValidObjectId } from "mongoose"
 
 class PetController {
     static async create(req, res){
@@ -75,6 +76,61 @@ class PetController {
         const petsUser = await Pet.find({"user._id": idToken.toString()}).sort("-createdAt")
 
         res.status(200).json({petsUser})
+    }
+
+    static async getAllUserAdopter(req, res){
+        const userToken = await getUserToken(req)
+        const idToken = userToken._id
+
+        const petsAdopter = await Pet.find({"adopter._id": idToken}).sort("-createdAt")
+
+        res.status(200).json({petsAdopter})
+    }
+
+    static async getPetById(req, res){
+        const _id = req.params.id
+        if(!isValidObjectId(_id)){
+            res.status(422).json({message: "Id inválido"})
+            return
+        }
+
+        const pet = await Pet.findById({_id})
+        if(!pet){
+            res.status(404).json({message: "Pet não encontrado"})
+            return
+        }
+
+        res.status(200).json({pet})
+        
+
+    }
+
+    static async removePet(req, res){
+        const _id = req.params.id
+
+        if(!isValidObjectId(_id)){
+            res.status(422).json({message: "Id inválido"})
+            return
+        }
+        const pet = await Pet.findById({_id})
+
+        if(!pet){
+            res.status(422).json({message:"Pet não encontrado!"})
+            return
+        }
+
+        const petUser = await getUserToken(req)
+        console.log(pet.user._id)
+        console.log(petUser._id)
+
+        if(pet.user._id !== petUser._id.toString()){
+            res.status(422).json({message:"Pet não é seu!"})
+            return
+        }
+
+        await Pet.findByIdAndDelete(_id)
+
+        res.status(200).json({message: "Pet deletado"})
     }
 }
 

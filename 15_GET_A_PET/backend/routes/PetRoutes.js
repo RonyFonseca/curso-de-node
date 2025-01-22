@@ -9,6 +9,9 @@ const router = express.Router()
 
 router.post("/create", verifyToken, imageUpload.array("images"), PetController.create)
 router.get("/mypets", verifyToken, PetController.getAllPetUser)
+router.get("/myadopter", verifyToken, PetController.getAllUserAdopter)
+router.get("/:id", PetController.getPetById)
+router.delete("/:id", verifyToken, PetController.removePet)
 router.get("/", PetController.getAllpets)
 
 export default router
