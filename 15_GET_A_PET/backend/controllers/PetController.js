@@ -132,6 +132,124 @@ class PetController {
 
         res.status(200).json({message: "Pet deletado"})
     }
+
+    static async editPet(req, res){
+        const _id = req.params.id
+        const {name, age, weight, color, available} = req.body
+        const images = req.files
+
+        const updateData = {}
+
+        const pet = await Pet.findById({_id})
+
+        const userToken = await getUserToken(req)
+
+        if(!pet){
+            res.status(422).json({message: "Este pet não existe !"})
+            return 
+        }
+
+        if(userToken._id.toString() !== pet.user._id){
+            res.status(422).json({message: "Este pet não é seu !"})
+            return 
+        }
+
+        if(!name){
+            res.status(422).json({message: "The name fiel is empty !"})
+            return 
+        }else {
+            updateData.name = name
+        }
+
+        if(!age){
+            res.status(422).json({message: "The age fiel is empty !"})
+            return 
+        }else {
+            updateData.age = age
+        }
+
+        if(!weight){
+            res.status(422).json({message: "The weight fiel is empty !"})
+            return 
+        }else {
+            updateData.weight = weight
+        }
+
+        if(!color){
+            res.status(422).json({message: "The color fiel is empty !"})
+            return 
+        }else {
+            updateData.color = color
+        }
+
+        if(images.length == 0){
+            res.status(422).json({message: "The images fiel is empty !"})
+            return 
+        }else {
+            updateData.images = []
+            images.map((image) => {
+                updateData.images.push(image)
+            })
+        }
+
+        await Pet.findByIdAndUpdate(_id, updateData)
+        res.status(200).json({message:"O pet foi atualizado com sucesso!"})
+    }
+
+    static async schedule(req, res){
+        const _id = req.params.id
+
+        const pet = await Pet.findById(_id)
+        if(!pet){
+            res.status(422).json({message: "Este pet não existe !"})
+            return 
+        }
+
+        const userToken = await getUserToken(req)
+        if(userToken._id.toString() == pet.user._id){
+            res.status(422).json({message: "você não pode adotar seu pet !"})
+            return 
+        }
+
+        if(pet.adopter){
+            if(pet.adopter._id == userToken._id){
+                res.status(422).json({message: "você já agendou visita a esse pet !"})
+                return 
+            }
+        }
+
+        pet.adopter = {
+            _id: userToken.id,
+            name: userToken.name,
+            image: userToken.image
+        }
+
+        await Pet.findByIdAndUpdate(_id, pet)
+        res.status(200).json({message:"Agendado a visita"})
+    }
+
+    static async conclude(req, res){
+        const _id = req.params.id
+
+        const pet = await Pet.findById({_id})
+
+        if(!pet){
+            res.status(422).json({message: "Este pet não existe!"})
+            return
+        }
+
+        const userToken = await getUserToken(req)
+
+        if(userToken._id.toString() !== pet.user._id){
+            res.status(422).json({message: "Você não pode concluir a adoção !"})
+            return 
+        }
+
+        pet.available = false 
+
+        await Pet.findByIdAndUpdate(_id, pet)
+        res.status(200).json({message: "Pet adotado"})
+    }
 }
 
 export default PetController

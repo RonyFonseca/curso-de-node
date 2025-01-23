@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken"
-import getToken from "./get-token.js"
 
 const checkToken =(req, res) => {
 
@@ -7,9 +6,10 @@ const checkToken =(req, res) => {
         res.status(422).json({message:"Acesso negado"})
     }
 
-    const token = getToken(req)
-    const verified = jwt.verify(token, process.env.JWT_SECRET)
+    const headers = req.headers.authorization
+    const token = headers.split(" ")[1]
 
+    const verified = jwt.verify(token, process.env.JWT_SECRET)
     return verified
 
 }
