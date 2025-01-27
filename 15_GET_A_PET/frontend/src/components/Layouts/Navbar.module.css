@@ -1,0 +1,41 @@
+.NavBar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffd400;
+    color: #16479d,
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: #16479d;
+    gap: 5px;
+}
+
+.logo img {
+    width: 40px;
+}
+
+.NavBar ul {
+    display: flex;
+    list-style: none;
+}
+
+.NavBar li,
+.NavBar a {
+    color:#16479d;
+    text-decoration: none;
+    padding: 1em; 
+    transition: .5s;
+    border-radius: 10px;
+}
+
+.NavBar li:hover {
+    background-color: #16479d;
+}
+
+.NavBar li:hover > a {
+    color: #fff;
+}
