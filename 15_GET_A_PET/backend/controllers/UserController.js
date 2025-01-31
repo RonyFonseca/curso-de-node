@@ -37,8 +37,8 @@ class UserController{
         }
         
         const UserExist = await User.findOne({email:email})
-        if(UserExist){
-            res.status(422).json({message:"This user already exist!"})
+        if(UserExist !== null){
+            res.status(422).json({message:"Este usuário ja existe"})
             return 
         }
 
