@@ -10,7 +10,7 @@ const createUserToken = async(user, req, res) => {
     }, process.env.JWT_SECRET)
 
     // return token 
-    res.status(200).json({message: "Você está autenticado !", token, UserId: user._id})
+    res.status(200).json({message: "Você está autenticado !", token, UserId: user._id, name: user.name})
 }
 
 export default createUserToken
