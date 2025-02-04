@@ -18,6 +18,7 @@ function Navbar(){
             <ul>
                 {loged ? (<>
                 <li onClick={logout}>Sair</li>
+                <li><Link to="/pet/mypets">Meus pets</Link></li>
                 <li><Link to="/user/profile">Perfil</Link></li>
                 </>) : (<>
                 <li>

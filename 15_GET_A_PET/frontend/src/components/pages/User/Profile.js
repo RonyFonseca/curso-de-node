@@ -1,5 +1,6 @@
 import Input from '../../form/Input'
 import api from '../../../utils/api'
+import RoundedImage from '../../Layouts/RondedImage'
 
 import { useEffect, useState} from 'react'
 
@@ -12,6 +13,7 @@ import useFlashMessage from "../../../hooks/useFlashMessages"
 
 function Profile() {
     const [user, setUser] = useState({})
+    const [preview, setPreview] = useState()
     const [token] = useState(localStorage.getItem('token') || "")
     const {setFlashMessage} = useFlashMessage()
 
@@ -27,18 +29,20 @@ function Profile() {
     },[token])
 
     const onFileChange = (e) => {
-        setUser({...user, [e.target.name]: [e.target.files[0]]})
+        setPreview(e.target.files[0])
+        setUser({...user, [e.target.name]: e.target.files[0]})
+        console.log(user)
     }
 
     const handleChange = (e) => {
-        setUser({...user, [e.target.name]: [e.target.value]})
+        setUser({...user, [e.target.name]: e.target.value})
+        console.log(user)
     }
 
     const handleSubmit = async(e) => {
         e.preventDefault()
 
         let type = "success"
-        let msgText
 
         const formData = new FormData()
         await Object.keys(user).forEach((key) => {
@@ -57,6 +61,8 @@ function Profile() {
             return err.response.data
         })
 
+        console.log(`${process.env.REACT_APP_URL_API}images/users/${user.image}`)
+
         setFlashMessage(data.message, type)
     }
 
@@ -64,6 +70,9 @@ function Profile() {
     <section>
       <div className={styles.profile_header}>
         <h1>Perfil</h1>
+        {(user.image || preview) && (
+          <RoundedImage src={preview ? URL.createObjectURL(preview): `${process.env.REACT_APP_URL_API}images/users/${user.image}`}/>
+        )}
       </div>
       <form onSubmit={handleSubmit} className={formStyles.form_container}>
         <Input
