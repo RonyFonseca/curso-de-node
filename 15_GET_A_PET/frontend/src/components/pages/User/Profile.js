@@ -60,9 +60,7 @@ function Profile() {
             type = 'error'
             return err.response.data
         })
-
-        console.log(`${process.env.REACT_APP_URL_API}images/users/${user.image}`)
-
+        
         setFlashMessage(data.message, type)
     }
 
