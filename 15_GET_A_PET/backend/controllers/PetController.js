@@ -82,7 +82,7 @@ class PetController {
         const userToken = await getUserToken(req)
         const idToken = userToken._id
 
-        const petsAdopter = await Pet.find({"adopter._id": idToken}).sort("-createdAt")
+        const petsAdopter = await Pet.find({"adopter._id": idToken.toString()}).sort("-createdAt")
 
         res.status(200).json({petsAdopter})
     }
@@ -120,8 +120,6 @@ class PetController {
         }
 
         const petUser = await getUserToken(req)
-        console.log(pet.user._id)
-        console.log(petUser._id)
 
         if(pet.user._id !== petUser._id.toString()){
             res.status(422).json({message:"Pet não é seu!"})
@@ -182,10 +180,7 @@ class PetController {
             updateData.color = color
         }
 
-        if(images.length == 0){
-            res.status(422).json({message: "The images fiel is empty !"})
-            return 
-        }else {
+        if(images.length > 0){
             updateData.images = []
             images.map((image) => {
                 updateData.images.push(image)

@@ -45,6 +45,23 @@ function MyPets(){
         setFlashMessage(msg, type)
     }
 
+    const concludeAdoption = async(id) => {
+        let type = "success" 
+
+        const data = await api.patch(`/pets/conclude/${id}`, {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response) => {
+            return response.data
+        }).catch((err) => {
+            type= "error"
+            return err.response.data
+        })
+
+        setFlashMessage(data.message, type)
+    }
+
 
     return (
         <section>
@@ -55,17 +72,17 @@ function MyPets(){
             <div className={styles.petslist_container}>
                 {pets.length > 0 && pets.map((pet) => (
                     <div className={styles.petlist_row} key={pet._id}>
-                        <RoundedImage src={`${process.env.REACT_APP_URL_API}/images/pets/${pet.images[0].filename}`} alt={pet.name} width="px75"/>
+                        <RoundedImage src={`${process.env.REACT_APP_URL_API}/images/pets/${pet.images[0]}`} alt={pet.name} width="px75"/>
                         <span className="bold">{pet.name}</span>
                         <div className={styles.actions}>
                             {pet.available ?
                             (<>
                                 {pet.adopter && (
-                                    <button className={styles.conclude_btn}>Concluir adoção</button>
+                                    <button className={styles.conclude_btn} onClick={()=>concludeAdoption(pet._id)}>Concluir adoção</button>
                                 )}
                                 <Link to={`/pet/edit/${pet._id}`}>Editar</Link>
                                 <button onClick={() => remove(pet._id)}>Excluir</button>
-                            </>) : (<></>)}
+                            </>) : (<p>Pet ja foi adotado</p>)}
                         </div>
                     </div>
                 ))}

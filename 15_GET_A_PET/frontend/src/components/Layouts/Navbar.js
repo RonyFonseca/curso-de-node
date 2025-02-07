@@ -16,10 +16,14 @@ function Navbar(){
                 <h2>Get a Pet</h2>
             </div>
             <ul>
+                <li>
+                    <Link to="/">Adotar</Link>
+                </li>
                 {loged ? (<>
-                <li onClick={logout}>Sair</li>
                 <li><Link to="/pet/mypets">Meus pets</Link></li>
+                <li><Link to="/pet/myadoptions">Minhas adoções</Link></li>
                 <li><Link to="/user/profile">Perfil</Link></li>
+                <li onClick={logout}>Sair</li>
                 </>) : (<>
                 <li>
                     <Link to="/Login">Login</Link>
@@ -27,9 +31,6 @@ function Navbar(){
                 <li>
                     <Link to="/Register">Register</Link>
                 </li></>)}
-                <li>
-                    <Link to="/">Adotar</Link>
-                </li>
             </ul>
         </nav>
     )

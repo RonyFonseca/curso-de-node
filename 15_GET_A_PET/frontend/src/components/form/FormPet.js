@@ -46,7 +46,7 @@ function FormPet({ handleSubmit, petData, btnText }) {
           : pet.images &&
             pet.images.map((image, index) => (
               <img
-                src={`${process.env.REACT_APP_URL_API}/images/pets/${image.filename}`}
+                src={`${process.env.REACT_APP_URL_API}/images/pets/${image}`}
                 alt={pet.name}
                 key={`${pet.name}+${index}`}
               />
